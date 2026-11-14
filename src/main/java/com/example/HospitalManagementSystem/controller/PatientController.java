@@ -49,4 +49,36 @@ public class PatientController {
                 .status(HttpStatus.OK)
                 .body(patients);
     }
+
+    @PutMapping
+    public ResponseEntity<Patient> updatePatient(@RequestBody Patient patient){
+
+        Patient updatedPatient = patientService.updatePatient(patient);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(updatedPatient);
+    }
+
+    @DeleteMapping(params = "id")
+    public ResponseEntity<String> softDeletePatient(@RequestParam Long id){
+
+        patientService.softDeletePatient(id);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Patient " + id + " deleted successfully");
+
+    }
+
+    @DeleteMapping(params = "id", value = "/harddelete")
+    public ResponseEntity<String> hardDeletePatient(@RequestParam Long id){
+
+        patientService.hardDeletePatient(id);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Patient " + id + "hard deleted successfully");
+
+    }
 }

@@ -30,7 +30,7 @@ public class GlobalException {
     public ResponseEntity<String> handleRecordNotFoundException(RecordNotFoundException e){
 
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 
