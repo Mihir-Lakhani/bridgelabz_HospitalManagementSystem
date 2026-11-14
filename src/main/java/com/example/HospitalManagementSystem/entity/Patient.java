@@ -37,4 +37,6 @@ public class Patient {
 
     @Column(nullable = false, unique = true)
     private String phonenumber;
+
+    private Boolean isDeleted;
 }
