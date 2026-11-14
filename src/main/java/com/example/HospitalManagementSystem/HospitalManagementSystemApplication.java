@@ -10,6 +10,8 @@ public class HospitalManagementSystemApplication {
 		SpringApplication.run(HospitalManagementSystemApplication.class, args);
 
 		System.out.println("SERVER IS ON");
+
+
 	}
 
 }
