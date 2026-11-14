@@ -2,6 +2,8 @@ package com.example.HospitalManagementSystem.entity;
 
 import com.example.HospitalManagementSystem.enums.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,8 @@ public class Patient {
     @NotBlank
     private String name;
 
-    @Size(max = 120, min = 1)
+    @Max(120)
+    @Min(1)
     private Integer age;
 
     @Enumerated(EnumType.STRING)
