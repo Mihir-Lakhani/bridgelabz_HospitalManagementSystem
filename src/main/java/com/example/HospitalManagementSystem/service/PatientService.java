@@ -1,5 +1,9 @@
 package com.example.HospitalManagementSystem.service;
 
+import com.example.HospitalManagementSystem.dto.PatientRequestDto;
+import com.example.HospitalManagementSystem.dto.PatientResponseDto;
+import com.example.HospitalManagementSystem.dto.mapping.PatientRequestDtoToPatient;
+import com.example.HospitalManagementSystem.dto.mapping.PatientToPatientResponseDto;
 import com.example.HospitalManagementSystem.entity.Patient;
 import com.example.HospitalManagementSystem.exception.RecordNotFoundException;
 import com.example.HospitalManagementSystem.repository.PatientRepository;
@@ -11,52 +15,42 @@ import java.util.*;
 public class PatientService {
 
     private PatientRepository patientRepository;
+    private PatientRequestDtoToPatient requestMapper;
+    private PatientToPatientResponseDto responseMapper;
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository,
+                          PatientRequestDtoToPatient requestMapper,
+                          PatientToPatientResponseDto responseMapper) {
         this.patientRepository = patientRepository;
+        this.requestMapper = requestMapper;
+        this.responseMapper = responseMapper;
     }
 
-    public Patient createPatient(Patient patient){
-
+    public PatientResponseDto createPatient(PatientRequestDto request){
+        Patient patient = requestMapper.mapToPatient(request);
         patient.setIsDeleted(false);
-        Patient patientSaved = patientRepository.save(patient);
-
-        return patientSaved;
+        return responseMapper.mapToResponseDto(patientRepository.save(patient));
     }
 
-    public Patient getPatient(Long id){
-
-        Patient patientGot = patientRepository.findByIdAndIsDeletedFalse(id)
+    public PatientResponseDto getPatient(Long id){
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RecordNotFoundException("Patient not found"));
-
-        return patientGot;
+        return responseMapper.mapToResponseDto(patient);
     }
 
-    public List<Patient> getAllPatient(){
-
+    public List<PatientResponseDto> getAllPatient(){
         List<Patient> patients = patientRepository.findByIsDeletedFalse();
         if (patients.isEmpty()) throw new RecordNotFoundException("Patients not found");
 
-        return patients;
+        return patients.stream().map(responseMapper::mapToResponseDto).toList();
     }
 
-    public Patient updatePatient(Patient newPatient){
-
-        Long id = newPatient.getId();
-
-        Patient oldPatient = patientRepository.findByIdAndIsDeletedFalse(id)
+    public PatientResponseDto updatePatient(Long id, PatientRequestDto request){
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RecordNotFoundException("Patient does not exist. Please create a new record"));
 
-        oldPatient.setAge(newPatient.getAge());
-        oldPatient.setDisease(newPatient.getDisease());
-        oldPatient.setGender(newPatient.getGender());
-        oldPatient.setName(newPatient.getName());
-        oldPatient.setPhonenumber(newPatient.getPhonenumber());
-
-        Patient newPatient2 = patientRepository.save(oldPatient);
-
-        return newPatient2;
-
+        requestMapper.copyToPatient(request, patient);
+        return responseMapper.mapToResponseDto(patientRepository.save(patient));
     }
 
     public Boolean softDeletePatient(Long id){
@@ -76,5 +70,6 @@ public class PatientService {
         patientRepository.delete(patient);
         return true;
     }
+
 }
 
