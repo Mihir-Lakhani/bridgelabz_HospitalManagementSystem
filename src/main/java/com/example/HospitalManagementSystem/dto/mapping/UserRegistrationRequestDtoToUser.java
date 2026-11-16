@@ -18,6 +18,5 @@ public class UserRegistrationRequestDtoToUser {
     public void copyToUser(UserRegistrationRequestDto request, User user) {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
     }
 }

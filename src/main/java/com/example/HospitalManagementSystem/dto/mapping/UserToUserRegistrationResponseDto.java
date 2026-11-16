@@ -15,7 +15,7 @@ public class UserToUserRegistrationResponseDto {
 
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
-        response.setRole(user.getRole());
+        response.setRoles(new HashSet<>(user.getRoles()));
 
         return response;
     }

@@ -31,15 +31,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "user_roles",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id")
-//    )
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    // Shared roles must not be deleted when a user is deleted.
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id"})
+    )
+    private Set<Role> roles = new HashSet<>();
 
 
 }

@@ -21,6 +21,6 @@ public class UserRegistrationResponseDto {
 
     private String email;
 
-    private Role role;
+    private Set<Role> roles;
 
 }
