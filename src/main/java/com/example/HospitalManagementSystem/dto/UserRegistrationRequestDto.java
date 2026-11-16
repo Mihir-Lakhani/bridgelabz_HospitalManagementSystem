@@ -1,6 +1,5 @@
 package com.example.HospitalManagementSystem.dto;
 
-import com.example.HospitalManagementSystem.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -33,5 +32,4 @@ public class UserRegistrationRequestDto {
     @NotBlank
     private String email;
 
-    private Role role;
 }

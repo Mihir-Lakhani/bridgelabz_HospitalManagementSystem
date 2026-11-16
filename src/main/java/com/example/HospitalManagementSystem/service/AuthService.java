@@ -31,15 +31,15 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.requestMapper = requestMapper;
         this.responseMapper = responseMapper;
-        this.roleRepository=roleRepository;
+        this.roleRepository = roleRepository;
     }
 
     public UserRegistrationResponseDto register(UserRegistrationRequestDto userRegistrationRequest){
 
-        if (userRepository.existsByUsername(userRegistrationRequest.getUsername())){
+        if (!userRepository.findByUsername(userRegistrationRequest.getUsername()).isEmpty()){
             throw new UsernameAlreadyTakenException("This user name already exists please LogIn or change Username");
         }
-        if (userRepository.existsByEmail(userRegistrationRequest.getEmail())){
+        if (!userRepository.findByEmail(userRegistrationRequest.getEmail()).isEmpty()){
             throw new DataIntegrityViolationException("This email address already exists please LogIn or change email");
         }
 
@@ -47,7 +47,7 @@ public class AuthService {
 
         User userToBeSaved = requestMapper.mapToUser(userRegistrationRequest);
         userToBeSaved.setPassword(encodedPassword);
-        userToBeSaved.setRole(
+        userToBeSaved.getRoles().add(
                 roleRepository.findByName(RoleType.USER)
                         .orElseThrow(() -> new IllegalStateException("Role is missing")));
 
